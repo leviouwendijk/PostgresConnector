@@ -139,7 +139,7 @@ public actor PostgresConnector {
                 throw PostgresConnectorError.duplicateDatabaseIdentifier(database.id.rawValue)
             }
 
-            let sqlConfiguration = try database.makeSQLConfiguration()
+            let sqlConfiguration = try database.make.sql_configuration()
             let source = PostgresConnectionSource(sqlConfiguration: sqlConfiguration)
 
             pools[database.id] = EventLoopGroupConnectionPool(
