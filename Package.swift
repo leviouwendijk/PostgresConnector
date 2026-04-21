@@ -1,0 +1,37 @@
+// swift-tools-version: 6.2
+// The swift-tools-version declares the minimum version of Swift required to build this package.
+
+import PackageDescription
+
+let package = Package(
+    name: "PostgresConnector",
+    platforms: [
+        .macOS(.v13)
+    ],
+    products: [
+        .library(
+            name: "PostgresConnector",
+            targets: ["PostgresConnector"]
+        )
+    ],
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
+        .package(url: "https://github.com/apple/swift-nio-ssl.git", from: "2.29.0"),
+        .package(url: "https://github.com/vapor/postgres-kit.git", from: "2.11.4"),
+    ],
+    targets: [
+        .target(
+            name: "PostgresConnector",
+            dependencies: [
+                .product(name: "NIOCore", package: "swift-nio"),
+                .product(name: "NIOPosix", package: "swift-nio"),
+                .product(name: "NIOSSL", package: "swift-nio-ssl"),
+                .product(name: "PostgresKit", package: "postgres-kit"),
+            ],
+        ),
+        .testTarget(
+            name: "PostgresConnectorTests",
+            dependencies: ["PostgresConnector"]
+        ),
+    ]
+)
