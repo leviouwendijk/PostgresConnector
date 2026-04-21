@@ -3,8 +3,7 @@ import NIOCore
 import NIOPosix
 import PostgresKit
 
-// public final class PostgresConnector: @unchecked Sendable {
-public final class PostgresConnector {
+public actor PostgresConnector {
     private let eventLoopGroup: any EventLoopGroup
     private let ownsEventLoopGroup: Bool
     private let pools: [PostgresDatabaseIdentifier: EventLoopGroupConnectionPool<PostgresConnectionSource>]
@@ -33,16 +32,18 @@ public final class PostgresConnector {
         )
     }
 
-    public convenience init(
+    public init(
         databases: [PostgresDatabase],
         threadCount: Int = max(1, ProcessInfo.processInfo.activeProcessorCount)
     ) throws {
         let group = MultiThreadedEventLoopGroup(numberOfThreads: threadCount)
 
         do {
-            try self.init(
+            self.eventLoopGroup = group
+            self.ownsEventLoopGroup = true
+            self.pools = try Self.makePools(
                 databases: databases,
-                managedEventLoopGroup: group
+                eventLoopGroup: group
             )
         } catch {
             try? group.syncShutdownGracefully()
@@ -50,20 +51,11 @@ public final class PostgresConnector {
         }
     }
 
-    public func pool(
-        for database: PostgresDatabaseIdentifier
-    ) throws -> EventLoopGroupConnectionPool<PostgresConnectionSource> {
-        guard let pool = pools[database] else {
-            throw PostgresConnectorError.databaseNotRegistered(database.rawValue)
-        }
-        return pool
-    }
-
     public func rows(
         for query: PostgresPreparedQuery,
         on database: PostgresDatabaseIdentifier
     ) async throws -> [PostgresRow] {
-        let pool = try pool(for: database)
+        let pool = try self.pool(for: database)
 
         return try await withCheckedThrowingContinuation { continuation in
             pool.withConnection { connection in
@@ -89,7 +81,7 @@ public final class PostgresConnector {
         _ query: PostgresPreparedQuery,
         on database: PostgresDatabaseIdentifier
     ) async throws {
-        let pool = try pool(for: database)
+        let pool = try self.pool(for: database)
 
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             pool.withConnection { connection in
@@ -124,6 +116,15 @@ public final class PostgresConnector {
         if ownsEventLoopGroup {
             try? eventLoopGroup.syncShutdownGracefully()
         }
+    }
+
+    private func pool(
+        for database: PostgresDatabaseIdentifier
+    ) throws -> EventLoopGroupConnectionPool<PostgresConnectionSource> {
+        guard let pool = pools[database] else {
+            throw PostgresConnectorError.databaseNotRegistered(database.rawValue)
+        }
+        return pool
     }
 
     private static func makePools(
