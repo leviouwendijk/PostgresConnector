@@ -1,5 +1,5 @@
 {
-  "originHash" : "c68c46e2b72f771ea6ed3f43e9595b703d3b191a8667ba5b12980132e2296a3d",
+  "originHash" : "d2a0c98c22b76672996ef89e4e6e10dc798665097e25dae42cc0bd1b08ed32c4",
   "pins" : [
     {
       "identity" : "async-kit",
@@ -35,6 +35,33 @@
       "state" : {
         "revision" : "26b1d6825e7101ec4118fc208aa4574442319792",
         "version" : "1.32.2"
+      }
+    },
+    {
+      "identity" : "primitives",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leviouwendijk/Primitives.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "88c0aad7d912d13fcc9131ac271d1691da998355"
+      }
+    },
+    {
+      "identity" : "psql",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leviouwendijk/PSQL.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "d38ced567e93a5c616836e6dadba5206ad182caa"
+      }
+    },
+    {
+      "identity" : "registry",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leviouwendijk/Registry.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "49966bb43475aae8231356853a2f1303d95346eb"
       }
     },
     {

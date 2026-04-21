@@ -19,6 +19,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-nio-ssl.git", from: "2.29.0"),
         .package(url: "https://github.com/vapor/postgres-kit.git", from: "2.11.4"),
         .package(url: "https://github.com/leviouwendijk/Milieu.git", branch: "master"),
+        .package(url: "https://github.com/leviouwendijk/PSQL.git", branch: "master"),
     ],
     targets: [
         .target(
@@ -29,6 +30,7 @@ let package = Package(
                 .product(name: "NIOSSL", package: "swift-nio-ssl"),
                 .product(name: "PostgresKit", package: "postgres-kit"),
                 .product(name: "Milieu", package: "Milieu"),
+                .product(name: "PSQL", package: "PSQL"),
             ],
         ),
         .testTarget(

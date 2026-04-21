@@ -2,6 +2,7 @@ import Foundation
 import NIOCore
 import NIOPosix
 import PostgresKit
+import PSQL
 
 public actor PostgresConnector {
     private let eventLoopGroup: any EventLoopGroup
@@ -67,6 +68,16 @@ public actor PostgresConnector {
     }
 
     public func rows(
+        for renderedSQL: PSQL.RenderedSQL,
+        on database: PostgresDatabaseIdentifier
+    ) async throws -> [PostgresRow] {
+        return try await rows(
+            for: .init(renderedSQL),
+            on: database
+        )
+    }
+
+    public func rows(
         sql: String,
         binds: [PostgresData] = [],
         on database: PostgresDatabaseIdentifier
@@ -95,6 +106,16 @@ public actor PostgresConnector {
                 }
             }
         }
+    }
+
+    public func run(
+        _ renderedSQL: PSQL.RenderedSQL,
+        on database: PostgresDatabaseIdentifier
+    ) async throws {
+        try await run(
+            .init(renderedSQL),
+            on: database
+        )
     }
 
     public func run(
