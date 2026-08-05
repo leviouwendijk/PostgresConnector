@@ -129,6 +129,78 @@ public actor PostgresConnector {
         )
     }
 
+    public func transaction<Result: Sendable>(
+        on database: PostgresDatabaseIdentifier,
+        options: PostgresTransactionOptions = .init(),
+        _ operation: @escaping @Sendable (
+            PostgresTransaction
+        ) async throws -> Result
+    ) async throws -> Result {
+        let pool = try self.pool(
+            for: database
+        )
+
+        return try await pool
+            .withConnection { connection in
+                connection.eventLoop.makeFutureWithTask {
+                    let transaction = PostgresTransaction(
+                        connection: connection
+                    )
+
+                    do {
+                        try Task.checkCancellation()
+
+                        try await transaction.begin(
+                            options: options
+                        )
+                    } catch {
+                        await transaction.close()
+
+                        throw error
+                    }
+
+                    do {
+                        let result = try await operation(
+                            transaction
+                        )
+
+                        try Task.checkCancellation()
+
+                        try await transaction.commit()
+
+                        await transaction.close()
+
+                        return result
+                    } catch {
+                        let operationError = error
+
+                        do {
+                            try await transaction.rollback()
+                        } catch {
+                            let rollbackError = error
+
+                            await transaction.close()
+
+                            throw PostgresTransactionError
+                                .rollbackFailed(
+                                    operation: String(
+                                        describing: operationError
+                                    ),
+                                    rollback: String(
+                                        describing: rollbackError
+                                    )
+                                )
+                        }
+
+                        await transaction.close()
+
+                        throw operationError
+                    }
+                }
+            }
+            .get()
+    }
+
     public func shutdown() {
         for pool in pools.values {
             try? pool.syncShutdownGracefully()

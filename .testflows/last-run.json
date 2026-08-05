@@ -1,0 +1,25 @@
+{
+  "failed" : 0,
+  "failed_names" : [
+
+  ],
+  "generated_at" : "2026-08-05T15:47:21Z",
+  "passed" : 1,
+  "results" : [
+    {
+      "display_name" : "transaction",
+      "duration_seconds" : 0.6398440599441528,
+      "name" : "transaction",
+      "status" : "passed",
+      "tags" : [
+        "connector",
+        "integration",
+        "postgres",
+        "transaction"
+      ]
+    }
+  ],
+  "skipped" : 0,
+  "title" : "PostgresConnector",
+  "total" : 1
+}

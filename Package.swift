@@ -12,7 +12,13 @@ let package = Package(
         .library(
             name: "PostgresConnector",
             targets: ["PostgresConnector"]
-        )
+        ),
+        .executable(
+            name: "pgctest",
+            targets: [
+                "PostgresConnectorTestFlows",
+            ]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
@@ -20,6 +26,10 @@ let package = Package(
         .package(url: "https://github.com/vapor/postgres-kit.git", from: "2.11.4"),
         .package(url: "https://github.com/leviouwendijk/Milieu.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/PSQL.git", branch: "master"),
+        .package(
+            url: "https://github.com/leviouwendijk/TestFlows.git",
+            branch: "master"
+        )
     ],
     targets: [
         .target(
@@ -33,9 +43,19 @@ let package = Package(
                 .product(name: "PSQL", package: "PSQL"),
             ],
         ),
-        .testTarget(
-            name: "PostgresConnectorTests",
-            dependencies: ["PostgresConnector"]
+        .executableTarget(
+            name: "PostgresConnectorTestFlows",
+            dependencies: [
+                "PostgresConnector",
+                .product(
+                    name: "TestFlows",
+                    package: "TestFlows"
+                ),
+                .product(
+                    name: "Milieu",
+                    package: "Milieu"
+                )
+            ]
         ),
     ]
 )
