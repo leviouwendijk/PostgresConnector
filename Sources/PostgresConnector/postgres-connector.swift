@@ -201,6 +201,12 @@ public actor PostgresConnector {
             .get()
     }
 
+    public func registeredDatabaseIdentifiers() -> [PostgresDatabaseIdentifier] {
+        return pools.keys.sorted {
+            $0.rawValue < $1.rawValue
+        }
+    }
+
     public func shutdown() {
         for pool in pools.values {
             try? pool.syncShutdownGracefully()
