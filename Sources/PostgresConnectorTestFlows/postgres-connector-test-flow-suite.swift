@@ -7,5 +7,6 @@ enum PostgresConnectorFlowSuite:
 
     static let flows: [TestFlow] = [
         transactionFlow,
+        declarationFlow,
     ]
 }

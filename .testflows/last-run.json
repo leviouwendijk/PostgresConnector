@@ -3,19 +3,18 @@
   "failed_names" : [
 
   ],
-  "generated_at" : "2026-08-05T15:47:21Z",
+  "generated_at" : "2026-11-17T13:16:35Z",
   "passed" : 1,
   "results" : [
     {
-      "display_name" : "transaction",
-      "duration_seconds" : 0.6398440599441528,
-      "name" : "transaction",
+      "display_name" : "declarations",
+      "duration_seconds" : 0.05051100254058838,
+      "name" : "declarations",
       "status" : "passed",
       "tags" : [
+        "configuration",
         "connector",
-        "integration",
-        "postgres",
-        "transaction"
+        "postgres"
       ]
     }
   ],
